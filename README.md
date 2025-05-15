@@ -25,12 +25,6 @@ An interactive Streamlit app that analyzes HAR files to identify performance iss
 
 ![AI-Powered Summary](demo3.png)
 *Viewing AI-powered summary*
+
 ---
 
-## 🚀 How to Run
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/yourname/har-analyzer.git
-cd har-analyzer
