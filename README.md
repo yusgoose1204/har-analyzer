@@ -17,8 +17,14 @@ An interactive Streamlit app that analyzes HAR files to identify performance iss
 
 ## 📸 Screenshots
 
-![Dashboard Screenshot](./images/demo_screenshot.png) <!-- optional -->
+![Upload HAR and charts](demo1.png)
+*Uploading a HAR file and displaying charts*
 
+![Rule-based insights](demo2.png)
+*Viewing rule-based insights*
+
+![AI-Powered Summary](demo3.png)
+*Viewing AI-powered summary*
 ---
 
 ## 🚀 How to Run
