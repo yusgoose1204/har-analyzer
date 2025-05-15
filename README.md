@@ -28,3 +28,4 @@ An interactive Streamlit app that analyzes HAR files to identify performance iss
 
 ---
 
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://har-analyzer.streamlit.app)
