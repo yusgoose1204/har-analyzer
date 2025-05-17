@@ -41,16 +41,22 @@ if uploaded_file:
             st.session_state.mime_filter = mime_options
 
         # --- Sidebar Filters
-        st.sidebar.header("🔍 Filters")
-        with st.sidebar.expander("Filter Controls", expanded=True):
+        with st.expander("🔍 Show Filters", expanded=False):
             st.session_state.status_filter = st.multiselect(
-                "Status Categories", status_options, default=st.session_state.status_filter
+                "Status Categories",
+                options=status_options,
+                default=st.session_state.status_filter
             )
+
             st.session_state.ttfb_filter = st.checkbox(
-                "Show only slow TTFB (>500ms)", value=st.session_state.ttfb_filter
+                "Show only slow TTFB (>500ms)",
+                value=st.session_state.ttfb_filter
             )
+
             st.session_state.mime_filter = st.multiselect(
-                "MIME Types", mime_options, default=st.session_state.mime_filter
+                "MIME Types",
+                options=mime_options,
+                default=st.session_state.mime_filter
             )
 
         # --- Apply Filters
@@ -87,15 +93,6 @@ if uploaded_file:
         # --- Rule Analysis + Expanders
         requests_with_issues = []
 
-        # Define tips for known rules
-        RULE_TIPS = {
-            "Slow TTFB": "High TTFB means the server took too long to respond. Could indicate backend latency, cold starts, or edge location mismatch.",
-            "Large Payload": "Payloads over 1MB may delay rendering, especially for users on slow networks or mobile.",
-            "4xx Error": "Client-side error. Common causes: bad URLs, missing auth, or malformed requests.",
-            "5xx Error": "Server-side failure. Could be due to bugs, crashes, or dependency timeouts.",
-            "Redirect Chain": "Multiple redirects can hurt performance and break session state."
-        }
-
         for req in filtered_df.to_dict(orient="records"):
             issues = analyze_request(req)
             if issues:
@@ -104,11 +101,32 @@ if uploaded_file:
                 title = f"{req['method']} {req['url'][:90]}"
                 with st.expander(title):
                     for issue in sorted(issues, key=lambda i: i['severity']):
-                        rule_name = issue['message'].split(":")[0] # Extract the rule name from the message
-                        st.markdown(f"- **{issue['severity'].capitalize()}** — {issue['message']}")
-                        if rule_name in RULE_TIPS:
-                            print("DEBUG - Rule Name:", rule_name)
-                            st.caption(f"💡 {RULE_TIPS[rule_name]}")
+                        rule_name = issue.get("rule_id", issue["message"].split(":")[0])
+
+                        # Issue Summary
+                        st.markdown(f"** {issue['severity'].capitalize()}** — {issue['message']}")
+
+                        # General Suggestion
+                        if 'suggestion' in issue:
+                            st.markdown(f"🧠 **Suggestion:** {issue['suggestion']}")
+                            st.markdown(" ")
+
+                        # Salesforce Context
+                        if 'sf_context' in issue:
+                            st.markdown(f"💼 **SF Context:** {issue['sf_context']}")
+                            st.markdown(" ")
+
+                        # Suggested Next Steps
+                        if "next_step" in issue:
+                            st.markdown("🔍 **Suggested Next Steps:**")
+                            for line in issue["next_step"].split("\n"):
+                                st.markdown(f"- {line.strip()}")
+                            st.markdown(" ")
+
+                        # Visual Divider Between Issues
+                        st.markdown("---")
+
+                    # Request Summary Footer
                     st.markdown(f"`Status: {req['status']} | Time: {req['time_ms']} ms | TTFB: {req['wait_time']} ms`")
 
         # --- AI Summary Toggle
