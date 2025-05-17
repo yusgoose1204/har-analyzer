@@ -2,7 +2,7 @@ import json
 import streamlit as st
 import pandas as pd
 from har_parser import extract_requests
-from visualizer import plot_top_slowest_requests, plot_status_code_distribution
+from visualizer import plot_top_slowest_requests, plot_status_code_distribution, plot_domain_load_time
 from rule_engine import analyze_request
 from llm_summary import summarize_issues
 
@@ -87,6 +87,12 @@ if uploaded_file:
             st.markdown("#### Status Code Distribution")
             fig2 = plot_status_code_distribution(filtered_df, return_fig=True)
             st.plotly_chart(fig2, use_container_width=True)
+
+        st.markdown("---")
+        st.subheader("🌐 Top Domains by Total Load Time")
+
+        fig3 = plot_domain_load_time(filtered_df, return_fig=True)
+        st.plotly_chart(fig3, use_container_width=True)
 
         st.markdown("---")
         st.subheader("🧠 Rule-Based Insights")
