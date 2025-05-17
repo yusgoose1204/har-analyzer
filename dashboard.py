@@ -86,6 +86,16 @@ if uploaded_file:
         st.subheader("🧠 Rule-Based Insights")
         # --- Rule Analysis + Expanders
         requests_with_issues = []
+
+        # Define tips for known rules
+        RULE_TIPS = {
+            "Slow TTFB": "High TTFB means the server took too long to respond. Could indicate backend latency, cold starts, or edge location mismatch.",
+            "Large Payload": "Payloads over 1MB may delay rendering, especially for users on slow networks or mobile.",
+            "4xx Error": "Client-side error. Common causes: bad URLs, missing auth, or malformed requests.",
+            "5xx Error": "Server-side failure. Could be due to bugs, crashes, or dependency timeouts.",
+            "Redirect Chain": "Multiple redirects can hurt performance and break session state."
+        }
+
         for req in filtered_df.to_dict(orient="records"):
             issues = analyze_request(req)
             if issues:
@@ -94,7 +104,10 @@ if uploaded_file:
                 title = f"{req['method']} {req['url'][:90]}"
                 with st.expander(title):
                     for issue in sorted(issues, key=lambda i: i['severity']):
+                        rule_name = issue['message'].split(":")[0] # Extract the rule name from the message
                         st.markdown(f"- **{issue['severity'].capitalize()}** — {issue['message']}")
+                        if rule_name in RULE_TIPS:
+                            st.caption(f"💡 {RULE_TIPS[rule_name]}")
                     st.markdown(f"`Status: {req['status']} | Time: {req['time_ms']} ms | TTFB: {req['wait_time']} ms`")
 
         # --- AI Summary Toggle

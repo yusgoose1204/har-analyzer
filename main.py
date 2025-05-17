@@ -1,6 +1,6 @@
 from har_parser import load_har_file, extract_requests
 from rule_engine import analyze_request
-from visualizer import plot_top_slowest_requests, show_dashboard
+from visualizer import plot_top_slowest_requests
 
 # Define severity ranking
 SEVERITY_ORDER = {
