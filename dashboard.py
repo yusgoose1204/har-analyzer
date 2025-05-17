@@ -107,6 +107,7 @@ if uploaded_file:
                         rule_name = issue['message'].split(":")[0] # Extract the rule name from the message
                         st.markdown(f"- **{issue['severity'].capitalize()}** — {issue['message']}")
                         if rule_name in RULE_TIPS:
+                            print("DEBUG - Rule Name:", rule_name)
                             st.caption(f"💡 {RULE_TIPS[rule_name]}")
                     st.markdown(f"`Status: {req['status']} | Time: {req['time_ms']} ms | TTFB: {req['wait_time']} ms`")
 
