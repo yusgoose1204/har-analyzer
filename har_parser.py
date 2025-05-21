@@ -1,6 +1,8 @@
 import json
 import os
 
+SENSITIVE_HEADERS = ['authorization', 'cookie', 'set-cookie', 'x-user-id', 'email', 'session-id']
+
 def load_har_file(filepath):
     if not os.path.exists(filepath):
         raise FileNotFoundError(f"File not found: {filepath}")
@@ -11,6 +13,12 @@ def load_har_file(filepath):
             raise ValueError("HAR file is empty.")
         return json.loads(contents)
 
+def sanitize_headers(headers):
+    return [
+        {**h, 'value': '[REDACTED]'} if h.get('name', '').lower() in SENSITIVE_HEADERS else h
+        for h in headers
+    ]
+
 def extract_requests(har_data):
     entries = har_data.get('log', {}).get('entries', [])
     requests = []
@@ -20,7 +28,7 @@ def extract_requests(har_data):
         response = entry.get('response', {})
         timings = entry.get('timings', {})
         content = response.get('content', {})
-        headers = request.get('headers', [])
+        headers = sanitize_headers(request.get('headers', []))
         cache = entry.get('cache', {})
 
         # Extract values safely

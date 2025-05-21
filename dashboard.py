@@ -10,10 +10,17 @@ st.set_page_config(page_title="HAR Analyzer", layout="wide")
 
 # --- Header
 st.title("🧪 HAR File Analyzer")
+st.caption("Version 1.3 – Last updated May 20, 2025")
 st.markdown("Upload a `.har` file to visualize performance data and issues.")
 
 # --- File Uploader
 uploaded_file = st.file_uploader("Upload HAR file", type=["har"])
+
+# --- Add security disclaimer banner
+st.warning(
+    "Note: This tool does not store HAR data and automatically redacts common sensitive headers. "
+    "However, please avoid uploading files that may include authentication tokens, session cookies, or PII in URLs or payloads."
+)
 
 if uploaded_file:
     try:
